@@ -1,2 +1,2 @@
 # Graphe-Algo
-Projet hraphes algo L3
+Projet graphes algo L3
