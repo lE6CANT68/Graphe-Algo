@@ -11,7 +11,7 @@ using std::vector;
 
 class graphe
 {
-    private :
+    protected :
         vector<sommet> d_sommets;
         vector<arc*> d_arcs;
     public:
@@ -34,5 +34,7 @@ class graphe
         void creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdajacence);
 
 };
+
+
 
 #endif // GRAPHE_H

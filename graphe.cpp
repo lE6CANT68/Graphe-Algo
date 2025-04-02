@@ -21,7 +21,7 @@ graphe::~graphe()
 }
 
 
-// Méthodes de la classe graphe
+// Mï¿½thodes de la classe graphe
 vector<sommet> graphe::renvoyerListeSommetsDuGraphe() const
 {
     return d_sommets;
@@ -44,7 +44,7 @@ void graphe::ajouterUnArcAuGraphe(arc *a)
 
 void graphe::supprimerUnSommetDuGraphe(const sommet &s)
 {
-    // Supprimer tous les arcs liés à ce sommet
+    // Supprimer tous les arcs liï¿½s ï¿½ ce sommet
     d_arcs.erase(remove_if(d_arcs.begin(), d_arcs.end(), [&s](arc* a) {
         if (a->renvoyerSommetSource()->renvoyerIdentifiant() == s.renvoyerIdentifiant() ||
             a->renvoyerSommetDestination()->renvoyerIdentifiant() == s.renvoyerIdentifiant()) {
@@ -93,15 +93,15 @@ void graphe::creeFsAPartirDuGraphe(const graphe& g, int*& fs)
     int nb_arcs = g.d_arcs.size();
     int taille_fs = nb_arcs + nb_sommets + 1; // Taille initiale
 
-    fs = new int[taille_fs]; // Allocation mémoire pour le tableau fs
+    fs = new int[taille_fs]; // Allocation mÃ©moire pour le tableau fs
 
-    // Initialiser le tableau avec des zéros
+    // Initialiser le tableau avec des zÃ©ros
     for (int i = 0; i < taille_fs; ++i)
     {
         fs[i] = 0;
     }
 
-    int index = 1; // Commencer à remplir à partir de l'index 1
+    int index = 1; // Commencer Ã  remplir Ã  partir de l'index 1
 
     // Remplir fs avec les successeurs pour chaque sommet
     for (const auto& sommet : g.d_sommets)
@@ -118,15 +118,15 @@ void graphe::creeFsAPartirDuGraphe(const graphe& g, int*& fs)
             }
         }
 
-        // Ajouter un 0 après les successeurs
-        fs[index++] = 0; // Ajouter un 0 pour séparer les successeurs
+        // Ajouter un 0 aprï¿½s les successeurs
+        fs[index++] = 0; // Ajouter un 0 pour sï¿½parer les successeurs
     }
 
-    fs[0] = index - 1; // Stocke le dernier index utilisé
+    fs[0] = index - 1; // Stocke le dernier index utilisÃ©
 }
 
 void graphe::creeAPSAPartirDeFs(int *fs, int *&aps) {
-    // Compter le nombre de 0 dans FS (à partir de l'indice 1 jusqu'à fs[0])
+    // Compter le nombre de 0 dans FS (ï¿½ partir de l'indice 1 jusqu'ï¿½ fs[0])
     int count = 0;
     for (int i = 1; i <= fs[0]; i++) {
          if (fs[i] == 0)
@@ -137,7 +137,7 @@ void graphe::creeAPSAPartirDeFs(int *fs, int *&aps) {
     aps[0] = count;
 
     int vertex = 1;
-    aps[vertex] = 1; // Le premier sommet commence à l'indice 1 dans FS
+    aps[vertex] = 1; // Le premier sommet commence ï¿½ l'indice 1 dans FS
     for (int i = 1; i <= fs[0]; i++) {
          if (fs[i] == 0 && vertex < count) {
              vertex++;
@@ -154,7 +154,7 @@ void graphe::creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdaja
     matAdajacence = new int*[n];
     for (int i = 0; i < n; ++i)
     {
-        matAdajacence[i] = new int[n]{}; // Initialisation à 0
+        matAdajacence[i] = new int[n]{}; // Initialisation ï¿½ 0
     }
 
     // Remplissage de la matrice d'adjacence
@@ -170,3 +170,4 @@ void graphe::creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdaja
             matAdajacence[src][dest] = 1; // Arc sans poids
     }
 }
+
