@@ -6,11 +6,11 @@
 
 class GrapheOriente : public graphe {
 private:
-    std::vector<int> d_rangs;
+    
 
 public:
     GrapheOriente(vector<sommet> tabSommets, vector<arc*> tabArcs);
-    std::vector<int> AlgorithmeDuRang();
+    std::vector<int> AlgorithmeDuRang(std::vector<int> d_rangs);
     void afficherRangs() const;
 };
 

@@ -5,7 +5,7 @@
 GrapheOriente::GrapheOriente(vector<sommet> tabSommets, vector<arc*> tabArcs) 
     : graphe(tabSommets, tabArcs) {}
 
-std::vector<int> GrapheOriente::AlgorithmeDuRang() {
+std::vector<int> GrapheOriente::AlgorithmeDuRang(std::vector<int> d_rangs) {
     std::vector<sommet> sommets = renvoyerListeSommetsDuGraphe();
     std::vector<arc*> arcs = renvoyerListeArcsDuGraphe();
     
@@ -57,7 +57,7 @@ std::vector<int> GrapheOriente::AlgorithmeDuRang() {
     return d_rangs;
 }
 
-void GrapheOriente::afficherRangs() const {
+/*void GrapheOriente::afficherRangs() const {
     std::cout << "Rangs des sommets :" << std::endl;
     std::cout<<"[";
     for (size_t i = 0; i < d_rangs.size(); ++i){
@@ -65,11 +65,11 @@ void GrapheOriente::afficherRangs() const {
     }
     std::cout<<"]";
 
-    /*std::vector<sommet> sommets = renvoyerListeSommetsDuGraphe();
+    std::vector<sommet> sommets = renvoyerListeSommetsDuGraphe();
     std::cout << "Rangs des sommets :" << std::endl;
     for (size_t i = 0; i < sommets.size(); ++i) {
         std::cout << "Sommet " << sommets[i].renvoyerIdentifiant() 
                   << " (" << sommets[i].renvoyerEtiquette() 
                   << ") : rang " << d_rangs[i] << std::endl;
-    }*/
-} 
+    }
+}*/ 
