@@ -171,3 +171,13 @@ void graphe::creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdaja
     }
 }
 
+vector<vector<int>> graphe::creerListeAdjacence() const {
+    int n = d_sommets.size();
+    vector<vector<int>> adj(n);
+    for (const auto& arc : d_arcs) {
+        int u = arc->renvoyerSommetSource()->renvoyerIdentifiant() - 1; // normalisé
+        int v = arc->renvoyerSommetDestination()->renvoyerIdentifiant() - 1;
+        adj[u].push_back(v);
+    }
+    return adj;
+}
