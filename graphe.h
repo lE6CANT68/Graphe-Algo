@@ -33,6 +33,7 @@ class graphe
         void creeAPSAPartirDeFs(int*fs, int *&aps);
         void creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdajacence);
 
+        vector<vector<int>> graphe::creerListeAdjacence()
 };
 
 
