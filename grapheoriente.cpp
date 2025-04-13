@@ -126,6 +126,105 @@ void GrapheOriente::trouverComposantesFortementConnexes() {
         std::cout << "Sommet " << (i + 1) << " appartient à la composante C" << cfc[i] << std::endl;
     }
 }
+void  GrapheOriente::Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& pr) {
+    int n = aps[0];   // Nombre de sommets
+    int m = fs[0];    // Nombre d’arcs
+
+    d = new int[n + 1];
+    pr = new int[n + 1];
+    int* inS = new int[n + 1]; // inS[i] = 1 si sommet i est encore à traiter
+
+    // Initialisation des tableaux
+    for (int i = 1; i <= n; i++) {
+        d[i] = p[s][i];     // Distance initiale depuis s
+        inS[i] = 1;         // Tous les sommets sont à traiter
+        pr[i] = -1;         // Prédécesseurs non définis
+    }
+
+    d[s] = 0;
+    pr[s] = 0;
+    inS[s] = 0; // Sommet source retiré de l’ensemble S
+    int ind = n - 1; // Nombre de sommets à traiter
+
+    while (ind > 0) {
+        int m = MAXPOIDS;
+        int j = -1;
+
+        // Recherche du sommet j de S ayant la distance minimale
+        for (int i = 1; i <= n; i++) {
+            if (inS[i] == 1 && d[i] < m) {
+                m = d[i];
+                j = i;
+            }
+        }
+
+        if (m == MAXPOIDS) break; // Plus de sommets atteignables
+
+        inS[j] = 0; // Marquer comme traité
+        ind--;
+
+        int k = aps[j]; // Parcours des successeurs de j
+        while (fs[k] != 0) {
+            int succ = fs[k];
+            if (inS[succ] == 1) {
+                int v = d[j] + p[j][succ]; // Distance via j
+                if (v < d[succ]) {
+                    d[succ] = v;
+                    pr[succ] = j;
+                }
+            }
+            k++;
+        }
+    }
+
+    delete[] inS;
+}
+// Fonction qui implémente l'algorithme de Dantzig
+// L : matrice des plus courts chemins (initialement copie de C)
+// C : matrice des coûts directs (dite matrice initiale)
+// n : nombre de sommets (en supposant indices de 1 à n)
+
+void GrapheOriente::Dantzig(vector<vector<int>> &L, const vector<vector<int>> &C, int n) {
+    // On considère que pour k=1 la matrice L est déjà initialisée avec C.
+    // Ensuite, on ajoute progressivement les sommets intermédiaires k+1, pour k allant de 1 à n-1.
+    for (int k = 1; k < n; k++) {
+        // 1. Mise à jour de la colonne pour le sommet k+1
+        for (int i = 1; i <= n; i++) {
+            int nouvelleDistance = INF;
+            // Pour chaque j de 1 à k, on cherche le minimum de L(i,j) + C(j,k+1)
+            for (int j = 1; j <= k; j++) {
+                if (L[i][j] != INF && C[j][k+1] != INF &&
+                    L[i][j] + C[j][k+1] < nouvelleDistance) {
+                    nouvelleDistance = L[i][j] + C[j][k+1];
+                }
+            }
+            L[i][k+1] = nouvelleDistance;
+        }
+
+        // 2. Mise à jour de la ligne pour le sommet k+1
+        for (int i = 1; i <= n; i++) {
+            int nouvelleDistance = INF;
+            // Pour chaque j de 1 à k, on calcule le minimum de C(k+1,j) + L(j,i)
+            for (int j = 1; j <= k; j++) {
+                if (C[k+1][j] != INF && L[j][i] != INF &&
+                    C[k+1][j] + L[j][i] < nouvelleDistance) {
+                    nouvelleDistance = C[k+1][j] + L[j][i];
+                }
+            }
+            L[k+1][i] = nouvelleDistance;
+        }
+
+        // 3. Mise à jour de la matrice centrale avec le nouvel indice k+1
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (L[i][k+1] != INF && L[k+1][j] != INF &&
+                    L[i][k+1] + L[k+1][j] < L[i][j]) {
+                    L[i][j] = L[i][k+1] + L[k+1][j];
+                }
+            }
+        }
+    }
+}
 
 
 
