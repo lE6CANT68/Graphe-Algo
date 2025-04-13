@@ -226,5 +226,52 @@ void GrapheOriente::Dantzig(vector<vector<int>> &L, const vector<vector<int>> &C
     }
 }
 
+void GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
+    int n = aps[0];
+    std::vector<int> tot(n, 0);  // Dates au plus tôt
+    std::vector<int> tard(n);    // Dates au plus tard
+    std::vector<int> marge(n);   // Marges
+
+    // Phase avant : calcul des dates au plus tôt
+    for (int i = 0; i < n; ++i) {
+        for (int k = aps[i]; fs[k] != 0; ++k) {
+            int j = fs[k];
+            if (tot[j] < tot[i] + durees[i])
+                tot[j] = tot[i] + durees[i];
+        }
+    }
+
+    int dureeTotale = *std::max_element(tot.begin(), tot.end());
+
+    // Initialiser toutes les dates au plus tard à la durée totale du projet
+    for (int i = 0; i < n; ++i)
+        tard[i] = dureeTotale;
+
+    // Phase arrière : calcul des dates au plus tard
+    for (int i = n - 1; i >= 0; --i) {
+        for (int k = aps[i]; fs[k] != 0; ++k) {
+            int j = fs[k];
+            if (tard[i] > tard[j] - durees[i])
+                tard[i] = tard[j] - durees[i];
+        }
+    }
+
+    // Affichage
+    std::cout << "\nOrdonnancement des taches :\n";
+    std::cout << "Tache | Tot | Tard | Marge | Critique\n";
+    std::cout << "--------------------------------------\n";
+    for (int i = 0; i < n; ++i) {
+        marge[i] = tard[i] - tot[i];
+        std::cout << "  " << i << "   |  " << tot[i]
+                  << "  |  " << tard[i]
+                  << "   |  " << marge[i]
+                  << "     |  ";
+        if (marge[i] == 0)
+            std::cout << "Oui";
+        std::cout << "\n";
+    }
+
+    std::cout << "\nDuree totale du projet : " << dureeTotale << " unites de temps.\n";
+}
 
 
