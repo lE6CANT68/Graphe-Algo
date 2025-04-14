@@ -4,8 +4,11 @@
 using std::cout;
 using std::endl;
 
+graphe::graphe(): d_sommets{}, d_arcs{}
+{}
+
 // Constructeur de la classe graphe
-graphe::graphe(vector<sommet> tabSommets, vector<arc*> tabArcs)
+graphe::graphe(vector<sommet> tabSommets, vector<arcDUnGraphe*> tabArcs)
 {
     d_sommets = tabSommets;
     for (const auto& a : tabArcs)
@@ -27,7 +30,7 @@ vector<sommet> graphe::renvoyerListeSommetsDuGraphe() const
     return d_sommets;
 }
 
-vector<arc*> graphe::renvoyerListeArcsDuGraphe() const
+vector<arcDUnGraphe*> graphe::renvoyerListeArcsDuGraphe() const
 {
     return d_arcs;
 }
@@ -37,7 +40,7 @@ void graphe::ajouterUnSommetAuGraphe(const sommet &s)
     d_sommets.push_back(s);
 }
 
-void graphe::ajouterUnArcAuGraphe(arc *a)
+void graphe::ajouterUnArcAuGraphe(arcDUnGraphe *a)
 {
     d_arcs.push_back(a);
 }
@@ -45,7 +48,7 @@ void graphe::ajouterUnArcAuGraphe(arc *a)
 void graphe::supprimerUnSommetDuGraphe(const sommet &s)
 {
     // Supprimer tous les arcs li�s � ce sommet
-    d_arcs.erase(remove_if(d_arcs.begin(), d_arcs.end(), [&s](arc* a) {
+    d_arcs.erase(remove_if(d_arcs.begin(), d_arcs.end(), [&s](arcDUnGraphe* a) {
         if (a->renvoyerSommetSource()->renvoyerIdentifiant() == s.renvoyerIdentifiant() ||
             a->renvoyerSommetDestination()->renvoyerIdentifiant() == s.renvoyerIdentifiant()) {
             delete a;
@@ -58,9 +61,9 @@ void graphe::supprimerUnSommetDuGraphe(const sommet &s)
     d_sommets.erase(remove_if(d_sommets.begin(), d_sommets.end(), [&s](const sommet& sm) { return sm.renvoyerIdentifiant() == s.renvoyerIdentifiant(); }), d_sommets.end());
 }
 
-void graphe::supprimerUnArcDuGraphe(arc* a)
+void graphe::supprimerUnArcDuGraphe(arcDUnGraphe* a)
 {
-    d_arcs.erase(remove_if(d_arcs.begin(), d_arcs.end(), [&a](arc* ap) { return ap == a; }), d_arcs.end());
+    d_arcs.erase(remove_if(d_arcs.begin(), d_arcs.end(), [&a](arcDUnGraphe* ap) { return ap == a; }), d_arcs.end());
     delete a;
 }
 
@@ -106,15 +109,12 @@ void graphe::creeFsAPartirDuGraphe(const graphe& g, int*& fs)
     // Remplir fs avec les successeurs pour chaque sommet
     for (const auto& sommet : g.d_sommets)
     {
-        bool hasSuccessor = false; // Indicateur pour savoir si le sommet a des successeurs
-
         // Chercher les successeurs de ce sommet
         for (const auto& arc : g.d_arcs)
         {
             if (arc->renvoyerSommetSource()->renvoyerIdentifiant() == sommet.renvoyerIdentifiant())
             {
                 fs[index++] = arc->renvoyerSommetDestination()->renvoyerIdentifiant(); // Ajouter le successeur
-                hasSuccessor = true; // Marquer que ce sommet a des successeurs
             }
         }
 

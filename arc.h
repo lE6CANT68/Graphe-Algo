@@ -1,30 +1,29 @@
 #ifndef ARC_H
 #define ARC_H
 
-#include<iostream>
-#include"sommet.h"
+#include "sommet.h"
 
-class arc
-{
-    private :
+class arcDUnGraphe {
+    private:
         sommet* d_source;
         sommet* d_destination;
 
     public:
-        arc(sommet source, sommet destination);
-        virtual ~arc();
+        arcDUnGraphe();
+        arcDUnGraphe(sommet source, sommet destination);
+        virtual ~arcDUnGraphe();
+
         sommet* renvoyerSommetSource() const;
         sommet* renvoyerSommetDestination() const;
-
 };
 
-class arcAvecPoids : public arc{
-    private :
+class arcAvecPoids : public arcDUnGraphe {
+    private:
         int d_poids;
-    public :
+
+    public:
         arcAvecPoids(sommet source, sommet destination, int poids);
         int renvoyerPoidsArc() const;
-
 };
 
 #endif // ARC_H

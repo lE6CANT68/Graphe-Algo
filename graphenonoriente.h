@@ -7,8 +7,8 @@
 
 class GrapheNonOriente : public graphe {
 public:
-    
-    GrapheNonOriente(const std::vector<sommet>& listeSommets, const std::vector<arc*>& listeArcs);
+
+    GrapheNonOriente(const std::vector<sommet>& listeSommets, const std::vector<arcDUnGraphe*>& listeArcs);
 
     /**
      * @brief Détecte et renvoie les points d'articulation du graphe.

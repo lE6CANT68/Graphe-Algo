@@ -18,8 +18,8 @@ using std::sort;
 static vector<vector<int>> construireListeAdjacence(const graphe& g) {
     int n = g.renvoyerListeSommetsDuGraphe().size();
     vector<vector<int>> adj(n);
-    vector<arc*> listeArcs = g.renvoyerListeArcsDuGraphe();
-    for (arc* a : listeArcs) {
+    vector<arcDUnGraphe*> listeArcs = g.renvoyerListeArcsDuGraphe();
+    for (arcDUnGraphe* a : listeArcs) {
         int u = a->renvoyerSommetSource()->renvoyerIdentifiant();
         int v = a->renvoyerSommetDestination()->renvoyerIdentifiant();
         // Ajout de l'arête dans les deux sens
@@ -65,7 +65,7 @@ static void explorerAP(int u, int parent, int& temps,
 /*------------------------------------------------------------------------
  * Constructeur de GrapheNonOriente.
  *------------------------------------------------------------------------*/
-GrapheNonOriente::GrapheNonOriente(const vector<sommet>& listeSommets, const vector<arc*>& listeArcs)
+GrapheNonOriente::GrapheNonOriente(const vector<sommet>& listeSommets, const vector<arcDUnGraphe*>& listeArcs)
     : graphe(listeSommets, listeArcs)
 {
 }
@@ -164,11 +164,11 @@ static bool comparerAretes(const Arete& a, const Arete& b) {
 graphe* GrapheNonOriente::arbreRecouvrantMinimal() {
     vector<sommet> listeSommets = renvoyerListeSommetsDuGraphe();
     int n = listeSommets.size();
-    vector<arc*> listeArcs = renvoyerListeArcsDuGraphe();
+    vector<arcDUnGraphe*> listeArcs = renvoyerListeArcsDuGraphe();
 
     // Construction de la liste des arêtes avec leur poids.
     vector<Arete> listeAretes;
-    for (arc* a : listeArcs) {
+    for (arcDUnGraphe* a : listeArcs) {
         int u = a->renvoyerSommetSource()->renvoyerIdentifiant();
         int v = a->renvoyerSommetDestination()->renvoyerIdentifiant();
         int poids = 1; // Poids par défaut
@@ -189,7 +189,7 @@ graphe* GrapheNonOriente::arbreRecouvrantMinimal() {
         sousEnsembles[i].rang = 0;
     }
 
-    vector<arc*> arcsMST;
+    vector<arcDUnGraphe*> arcsMST;
     int nbArcsSelectionnes = 0;
     int indexArete = 0;
     while (nbArcsSelectionnes < n - 1 && indexArete < listeAretes.size()) {
@@ -198,8 +198,8 @@ graphe* GrapheNonOriente::arbreRecouvrantMinimal() {
         int parentV = trouverParent(sousEnsembles, areteCourante.v);
         if (parentU != parentV) {
             // Recherche de l'arc d'origine correspondant à cette arête.
-            arc* arcTrouve = nullptr;
-            for (arc* orig : listeArcs) {
+            arcDUnGraphe* arcTrouve = nullptr;
+            for (arcDUnGraphe* orig : listeArcs) {
                 int uOrig = orig->renvoyerSommetSource()->renvoyerIdentifiant();
                 int vOrig = orig->renvoyerSommetDestination()->renvoyerIdentifiant();
                 if ((uOrig == areteCourante.u && vOrig == areteCourante.v) ||

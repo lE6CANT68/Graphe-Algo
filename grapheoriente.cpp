@@ -2,12 +2,12 @@
 #include <queue>
 #include <algorithm>
 
-GrapheOriente::GrapheOriente(vector<sommet> tabSommets, vector<arc*> tabArcs)
+GrapheOriente::GrapheOriente(vector<sommet> tabSommets, vector<arcDUnGraphe*> tabArcs)
     : graphe(tabSommets, tabArcs) {}
 
 std::vector<int> GrapheOriente::AlgorithmeDuRang(std::vector<int> d_rangs) {
     std::vector<sommet> sommets = renvoyerListeSommetsDuGraphe();
-    std::vector<arc*> arcs = renvoyerListeArcsDuGraphe();
+    std::vector<arcDUnGraphe*> arcs = renvoyerListeArcsDuGraphe();
 
     // Initialiser les rangs à -1 (non calculé)
     d_rangs.resize(sommets.size(), -1);
@@ -15,7 +15,7 @@ std::vector<int> GrapheOriente::AlgorithmeDuRang(std::vector<int> d_rangs) {
 
     // Calculer le degré d'entrée de chaque sommet
     std::vector<int> degreEntree(sommets.size(), 0);
-    for (arc* a : arcs) {
+    for (arcDUnGraphe* a : arcs) {
         int destId = a->renvoyerSommetDestination()->renvoyerIdentifiant();
         degreEntree[destId]++;
     }
@@ -37,7 +37,7 @@ std::vector<int> GrapheOriente::AlgorithmeDuRang(std::vector<int> d_rangs) {
         pile.pop();
 
         // Parcourir tous les arcs pour trouver les successeurs
-        for (arc* a : arcs) {
+        for (arcDUnGraphe* a : arcs) {
             if (a->renvoyerSommetSource()->renvoyerIdentifiant() == sommetCourant) {
                 int succId = a->renvoyerSommetDestination()->renvoyerIdentifiant();
                 degreEntree[succId]--;
@@ -76,7 +76,7 @@ std::vector<int> GrapheOriente::AlgorithmeDuRang(std::vector<int> d_rangs) {
 
 
 
-void dfsTarjan(int s, const vector<vector<int>>& adj, vector<int>& num, vector<int>& ro,
+void GrapheOriente::dfsTarjan(int s, const vector<vector<int>>& adj, vector<int>& num, vector<int>& ro,
                vector<int>& cfc, vector<bool>& enPileTarjan, vector<int>& pileTarjan, int& p, int& k)
 {
     p++;
@@ -87,9 +87,9 @@ void dfsTarjan(int s, const vector<vector<int>>& adj, vector<int>& num, vector<i
     for (int succ : adj[s]) {
         if (num[succ] == 0) {
             dfsTarjan(succ, adj, num, ro, cfc, enPileTarjan, pileTarjan, p, k);
-            ro[s] = min(ro[s], ro[succ]);
+            ro[s] = std::min(ro[s], ro[succ]);
         } else if (enPileTarjan[succ]) {
-            ro[s] = min(ro[s], num[succ]);
+            ro[s] = std::min(ro[s], num[succ]);
         }
     }
 
@@ -126,6 +126,7 @@ void GrapheOriente::trouverComposantesFortementConnexes() {
         std::cout << "Sommet " << (i + 1) << " appartient à la composante C" << cfc[i] << std::endl;
     }
 }
+
 void  GrapheOriente::Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& pr) {
     int n = aps[0];   // Nombre de sommets
     int m = fs[0];    // Nombre d’arcs
