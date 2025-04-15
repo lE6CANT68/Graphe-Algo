@@ -185,7 +185,7 @@ void  GrapheOriente::Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& 
 // C : matrice des coûts directs (dite matrice initiale)
 // n : nombre de sommets (en supposant indices de 1 à n)
 
-void GrapheOriente::Dantzig(vector<vector<int>> &L, const vector<vector<int>> &C, int n) {
+void GrapheOriente::Dantzig(int** L, const int** C, int n) {
     // On considère que pour k=1 la matrice L est déjà initialisée avec C.
     // Ensuite, on ajoute progressivement les sommets intermédiaires k+1, pour k allant de 1 à n-1.
     for (int k = 1; k < n; k++) {
