@@ -20,7 +20,7 @@ public:
                     ,vector<bool>& enPileTarjan,vector<int>& pileTarjan,int& p,int& k);
     void trouverComposantesFortementConnexes();
     void Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& pr);
-    void Dantzig(vector<vector<int>> &L, const vector<vector<int>> &C, int n);
+    void Dantzig(int** L, const int** C, int n);
     void Ordonnancement(int* fs, int* aps, int* durees);
 };
 
