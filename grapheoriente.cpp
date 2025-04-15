@@ -76,17 +76,18 @@ std::vector<int> GrapheOriente::AlgorithmeDuRang(std::vector<int> d_rangs) {
 
 
 
-void GrapheOriente::dfsTarjan(int s, const vector<vector<int>>& adj, vector<int>& num, vector<int>& ro,
-               vector<int>& cfc, vector<bool>& enPileTarjan, vector<int>& pileTarjan, int& p, int& k)
+void dfsTarjan(int s, int** adj, int* tailles, int* num, int* ro, int* cfc,
+               bool* enPileTarjan, int* pileTarjan, int& sommetPile, int& p, int& k)
 {
     p++;
     num[s] = ro[s] = p;
-    pileTarjan.push_back(s);
+    pileTarjan[sommetPile++] = s;
     enPileTarjan[s] = true;
 
-    for (int succ : adj[s]) {
+    for (int i = 0; i < tailles[s]; ++i) {
+        int succ = adj[s][i];
         if (num[succ] == 0) {
-            dfsTarjan(succ, adj, num, ro, cfc, enPileTarjan, pileTarjan, p, k);
+            dfsTarjan(succ, adj, tailles, num, ro, cfc, enPileTarjan, pileTarjan, sommetPile, p, k);
             ro[s] = std::min(ro[s], ro[succ]);
         } else if (enPileTarjan[succ]) {
             ro[s] = std::min(ro[s], num[succ]);
@@ -97,8 +98,7 @@ void GrapheOriente::dfsTarjan(int s, const vector<vector<int>>& adj, vector<int>
         k++;
         int v;
         do {
-            v = pileTarjan.back();
-            pileTarjan.pop_back();
+            v = pileTarjan[--sommetPile];
             enPileTarjan[v] = false;
             cfc[v] = k;
         } while (v != s);
@@ -106,26 +106,46 @@ void GrapheOriente::dfsTarjan(int s, const vector<vector<int>>& adj, vector<int>
 }
 
 
+
 void GrapheOriente::trouverComposantesFortementConnexes() {
     int n = renvoyerListeSommetsDuGraphe().size();
-    vector<vector<int>> adj = this->creerListeAdjacence();
 
-    vector<int> num(n, 0), ro(n, 0), cfc(n, 0);
-    vector<bool> enPileTarjan(n, false);
-    vector<int> pileTarjan;
+    int** adj;
+    int* tailles;
+    creerListeAdjacence(adj, tailles);
 
-    int p = 0, k = 0;
+    int* num = new int[n]{};
+    int* ro = new int[n]{};
+    int* cfc = new int[n]{};
+    bool* enPileTarjan = new bool[n]{};
+    int* pileTarjan = new int[n];
+    int sommetPile = 0;
+
+    int p = 0;
+    int k = 0;
 
     for (int s = 0; s < n; ++s) {
         if (num[s] == 0) {
-            dfsTarjan(s, adj, num, ro, cfc, enPileTarjan, pileTarjan, p, k);
+            dfsTarjan(s, adj, tailles, num, ro, cfc, enPileTarjan, pileTarjan, sommetPile, p, k);
         }
     }
 
     for (int i = 0; i < n; ++i) {
-        std::cout << "Sommet " << (i + 1) << " appartient à la composante C" << cfc[i] << std::endl;
+        std::cout << "Sommet " << i + 1 << " appartient à la composante C" << cfc[i] << std::endl;
     }
+
+    // Libération mémoire
+    for (int i = 0; i < n; ++i)
+        delete[] adj[i];
+    delete[] adj;
+    delete[] tailles;
+    delete[] num;
+    delete[] ro;
+    delete[] cfc;
+    delete[] enPileTarjan;
+    delete[] pileTarjan;
 }
+
 
 void  GrapheOriente::Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& pr) {
     int n = aps[0];   // Nombre de sommets
