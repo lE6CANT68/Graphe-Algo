@@ -16,8 +16,8 @@ public:
     void afficherRangs() const;
 
 
-    void dfsTarjan(int s,const vector<vector<int>>& adj,vector<int>& num,vector<int>& ro,vector<int>& cfc
-                    ,vector<bool>& enPileTarjan,vector<int>& pileTarjan,int& p,int& k);
+    void dfsTarjan(int s, int** adj, int* tailles, int* num, int* ro, int* cfc,
+               bool* enPileTarjan, int* pileTarjan, int& sommetPile, int& p, int& k);
     void trouverComposantesFortementConnexes();
     void Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& pr);
     void Dantzig(int** L, const int** C, int n);
