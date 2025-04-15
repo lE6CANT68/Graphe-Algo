@@ -171,7 +171,7 @@ void graphe::creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdaja
     }
 }
 
-vector<vector<int>> graphe::creerListeAdjacence() const {
+/*vector<vector<int>> graphe::creerListeAdjacence() const {
     int n = d_sommets.size();
     vector<vector<int>> adj(n);
     for (const auto& arc : d_arcs) {
@@ -180,4 +180,32 @@ vector<vector<int>> graphe::creerListeAdjacence() const {
         adj[u].push_back(v);
     }
     return adj;
+}
+*/
+void graphe::creerListeAdjacence(int**& adj, int*& tailles) const {
+    int n = d_sommets.size();
+    
+    // 1. Compter le nombre de successeurs pour chaque sommet
+    tailles = new int[n](); // tailles[i] = nombre de successeurs de i
+    for (const auto& arc : d_arcs) {
+        int u = arc->renvoyerSommetSource()->renvoyerIdentifiant() - 1;
+        tailles[u]++;
+    }
+
+    // 2. Allouer le tableau de listes d'adjacence
+    adj = new int*[n];
+    for (int i = 0; i < n; ++i) {
+        adj[i] = new int[tailles[i]];
+    }
+
+    // 3. Remplir les adjacences
+    // On a besoin d'un compteur temporaire pour suivre la position de remplissage
+    int* compteur = new int[n](); // initialisé à 0
+    for (const auto& arc : d_arcs) {
+        int u = arc->renvoyerSommetSource()->renvoyerIdentifiant() - 1;
+        int v = arc->renvoyerSommetDestination()->renvoyerIdentifiant() - 1;
+        adj[u][compteur[u]++] = v;
+    }
+
+    delete[] compteur;
 }
