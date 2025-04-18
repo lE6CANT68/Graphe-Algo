@@ -14,7 +14,7 @@ public:
      * @brief Détecte et renvoie les points d'articulation du graphe.
      * @return std::vector<int> Liste des identifiants des points d'articulation.
      */
-    std::vector<int> trouverPointsDArticulation();
+    int* trouverPointsDArticulation();
 
     /**
      * @brief Détecte et renvoie les isthmes (ponts) du graphe.
