@@ -277,21 +277,6 @@ void GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
         }
     }
 
-    // Affichage
-    std::cout << "\nOrdonnancement des taches :\n";
-    std::cout << "Tache | Tot | Tard | Marge | Critique\n";
-    std::cout << "--------------------------------------\n";
-    for (int i = 0; i < n; ++i) {
-        marge[i] = tard[i] - tot[i];
-        std::cout << "  " << i << "   |  " << tot[i]
-                  << "  |  " << tard[i]
-                  << "   |  " << marge[i]
-                  << "     |  ";
-        if (marge[i] == 0)
-            std::cout << "Oui";
-        std::cout << "\n";
-    }
-
     std::cout << "\nDuree totale du projet : " << dureeTotale << " unites de temps.\n";
 }
 
