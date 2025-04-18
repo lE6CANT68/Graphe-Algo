@@ -32,7 +32,7 @@ static vector<vector<int>> construireListeAdjacence(const graphe& g) {
 /*------------------------------------------------------------------------
  * Fonction DFS utilisée pour détecter les points d'articulation et les ponts.
  *------------------------------------------------------------------------*/
-static void explorerAP(int u, int parent, int& temps,
+static void dfs(int u, int parent, int& temps,
                        const vector<vector<int>>& adj,
                        vector<bool>& visite,
                        vector<int>& decouverte,
@@ -45,7 +45,7 @@ static void explorerAP(int u, int parent, int& temps,
     for (int v : adj[u]) {
         if (!visite[v]) {
             enfants++;
-            explorerAP(v, u, temps, adj, visite, decouverte, bas, pointArticulation, ponts);
+            dfs(v, u, temps, adj, visite, decouverte, bas, pointArticulation, ponts);
             bas[u] = std::min(bas[u], bas[v]);
             // Si u n'est pas racine et que bas[v] >= decouverte[u], u est un point d'articulation.
             if (parent != -1 && bas[v] >= decouverte[u])
@@ -65,7 +65,7 @@ static void explorerAP(int u, int parent, int& temps,
 /*------------------------------------------------------------------------
  * Constructeur de GrapheNonOriente.
  *------------------------------------------------------------------------*/
-GrapheNonOriente::GrapheNonOriente(const vector<sommet>& listeSommets, const vector<arcDUnGraphe*>& listeArcs)
+GrapheNonOriente::GrapheNonOriente(const vector<sommet>& listeSommets, const vector<arc*>& listeArcs)
     : graphe(listeSommets, listeArcs)
 {
 }
@@ -73,26 +73,35 @@ GrapheNonOriente::GrapheNonOriente(const vector<sommet>& listeSommets, const vec
 /*------------------------------------------------------------------------
  * Méthode pour trouver les points d'articulation du graphe.
  *------------------------------------------------------------------------*/
-vector<int> GrapheNonOriente::trouverPointsDArticulation() {
-    vector<sommet> listeSommets = renvoyerListeSommetsDuGraphe();
+int* GrapheNonOriente::trouverPointsDArticulation() {
+    std::vector<sommet> listeSommets = renvoyerListeSommetsDuGraphe();
     int n = listeSommets.size();
-    vector<vector<int>> adj = construireListeAdjacence(*this);
-    vector<bool> visite(n, false);
-    vector<int> decouverte(n, 0);
-    vector<int> bas(n, 0);
-    vector<bool> pointArticulation(n, false);
-    vector<pair<int,int>> ponts; // Calculé ici mais non utilisé dans cette méthode
+
+    std::vector<std::vector<int>> adj = construireListeAdjacence(*this);
+    std::vector<bool> visite(n, false);
+    std::vector<int> decouverte(n, 0);
+    std::vector<int> bas(n, 0);
+    std::vector<bool> pointArticulation(n, false);
+    std::vector<std::pair<int, int>> ponts; // utilisé mais pas retourné ici
     int temps = 0;
-    for (int i = 0; i < n; i++) {
+
+    for (int i = 0; i < n; ++i) {
         if (!visite[i])
-            explorerAP(i, -1, temps, adj, visite, decouverte, bas, pointArticulation, ponts);
+            dfs(i, -1, temps, adj, visite, decouverte, bas, pointArticulation, ponts);
     }
-    vector<int> pointsArticul;
-    for (int i = 0; i < n; i++) {
+
+    int* resultat = new int[n];
+    int index = 0;
+    for (int i = 0; i < n; ++i) {
         if (pointArticulation[i])
-            pointsArticul.push_back(i);
+            resultat[index++] = i;
     }
-    return pointsArticul;
+
+    if (index < n) {
+        resultat[index] = -1; // sentinelle de fin
+    }
+
+    return resultat;
 }
 
 /*------------------------------------------------------------------------
