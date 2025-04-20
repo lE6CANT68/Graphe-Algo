@@ -247,7 +247,7 @@ void GrapheOriente::Dantzig(int** L, const int** C, int n) {
     }
 }
 
-void GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
+int GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
     int n = aps[0];
     std::vector<int> tot(n, 0);  // Dates au plus tôt
     std::vector<int> tard(n);    // Dates au plus tard
@@ -277,7 +277,7 @@ void GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
         }
     }
 
-    std::cout << "\nDuree totale du projet : " << dureeTotale << " unites de temps.\n";
+    return dureeTotale;
 }
 
 
