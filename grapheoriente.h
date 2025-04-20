@@ -21,7 +21,7 @@ public:
     void trouverComposantesFortementConnexes();
     void Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& pr);
     void Dantzig(int** L, const int** C, int n);
-    void Ordonnancement(int* fs, int* aps, int* durees);
+    int Ordonnancement(int* fs, int* aps, int* durees);
 };
 
 #endif // GRAPHEORIENTE_H
