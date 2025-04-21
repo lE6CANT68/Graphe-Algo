@@ -10,6 +10,28 @@ ConstructeurGraphique::ConstructeurGraphique(graphe& g, DessinateurGraphe& d, in
     : d_graphe(g), d_dessinateur(d), d_rayon(rayon), d_couleur(couleur) {}
 
 
+void ConstructeurGraphique::viderEvenementsSouris() {
+    while (buttonhit()) {
+        int x, y;
+        getmouse(x, y); // Vide les événements en attente
+    }
+}
+
+void ConstructeurGraphique::attendreClic() {
+    // Ignorer tout clic en attente dans le buffer
+    while (buttonhit()) {
+        int x, y;
+        getmouse(x, y);
+    }
+
+    // Maintenant, attendre le prochain vrai clic utilisateur
+    while (!buttonhit()) {
+        delay(10); // Pour ne pas surcharger le CPU
+    }
+}
+
+
+
 void ConstructeurGraphique::ajouterSommet(int id, bool avecNom) {
     std::string nom;
 
@@ -21,8 +43,10 @@ void ConstructeurGraphique::ajouterSommet(int id, bool avecNom) {
     }
 
     std::cout << "Cliquez dans la fenetre pour placer le sommet...\n";
+    attendreClic();
     int x = 0, y = 0;
     while (!buttonhit()) {}
+
     getmouse(x, y);
 
     sommet s(id, nom);
@@ -32,10 +56,11 @@ void ConstructeurGraphique::ajouterSommet(int id, bool avecNom) {
 }
 
 void ConstructeurGraphique::ajouterArc(bool avecPoids, bool oriente) {
-    const auto& sommets = d_graphe.renvoyerListeSommetsDuGraphe();
+    viderEvenementsSouris();
+    auto& sommets = d_graphe.renvoyerListeSommetsDuGraphe();
 
-    sommet source;
-    sommet destination;
+    sommet* sourcePtr = nullptr;
+    sommet* destinationPtr = nullptr;
     bool trouver = false;
     int poids;
 
@@ -49,7 +74,7 @@ void ConstructeurGraphique::ajouterArc(bool avecPoids, bool oriente) {
             int dx = x - s.getCoordonnees().getX();
             int dy = y - s.getCoordonnees().getY();
             if (dx * dx + dy * dy <= d_rayon * d_rayon) {
-                source = s;
+                sourcePtr = &s;
                 trouver = true;
                 break;
             }
@@ -66,12 +91,25 @@ void ConstructeurGraphique::ajouterArc(bool avecPoids, bool oriente) {
         for (auto& s : sommets) {
             int dx = x - s.getCoordonnees().getX();
             int dy = y - s.getCoordonnees().getY();
-            if (dx * dx + dy * dy <= d_rayon * d_rayon && s.renvoyerIdentifiant() != source.renvoyerIdentifiant()) {
-                destination = s;
+            if (dx * dx + dy * dy <= d_rayon * d_rayon && &s != sourcePtr) {
+                destinationPtr = &s;
                 trouver = true;
                 break;
             }
         }
+    }
+
+    if (!sourcePtr || !destinationPtr) {
+        std::cerr << "Erreur: source ou destination non valide.\n";
+        return;
+    }
+
+    int idSrc = sourcePtr->renvoyerIdentifiant();
+    int idDst = destinationPtr->renvoyerIdentifiant();
+
+    if (d_graphe.arcExisteDeja(idSrc, idDst)) {
+        std::cout << "Erreur: Cet arc existe deja, ajout ignore.\n";
+        return;
     }
 
     arcDUnGraphe* arcAjoute = nullptr;
@@ -79,20 +117,17 @@ void ConstructeurGraphique::ajouterArc(bool avecPoids, bool oriente) {
     if (avecPoids) {
         std::cout << "Donnez le poids de l'arc : ";
         std::cin >> poids;
-        arcAjoute = new arcAvecPoids(source, destination, poids);
+        arcAjoute = new arcAvecPoids(*sourcePtr, *destinationPtr, poids);
     } else {
-        arcAjoute = new arcDUnGraphe(source, destination);
+        arcAjoute = new arcDUnGraphe(*sourcePtr, *destinationPtr);
     }
 
     d_graphe.ajouterUnArcAuGraphe(arcAjoute);
     d_dessinateur.dessinerArc(*arcAjoute, oriente);
-
 }
 
 
-void ConstructeurGraphique::lancerSaisie() {
-    int larg = 600, haut = 600;
-    opengraphsize(larg, haut);
+void ConstructeurGraphique::lancerSaisie(bool& orientation) {
 
     std::cout << "=== Saisie interactive ===\n";
     std::cout << "Cliquez pour creer un sommet.\n";
@@ -152,6 +187,8 @@ void ConstructeurGraphique::lancerSaisie() {
 
         oriente = (grapheOriente == 'o' || grapheOriente == 'O');
 
+        orientation = oriente;
+
         // Boucle de création d’arcs
         char continuerArc;
         do {
@@ -166,8 +203,7 @@ void ConstructeurGraphique::lancerSaisie() {
     }
 
     std::cout << "\nAppuyez sur ENTREE pour quitter l'application...\n";
-    getch();
-    closegraph();
+
 }
 
 

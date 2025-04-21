@@ -1,0 +1,222 @@
+#include <iostream>
+#include "graphics.h"
+#include "sommet.h"
+#include "arc.h"
+#include "graphe.h"
+#include "DessinateurGraphe.h"
+#include "ConstructeurGraphique.h"
+#include "GestionnaireFichierGraphe.h"
+#include "Interface.h"
+#include "AideAlgorithmique.h"
+
+using namespace std;
+
+void test()
+{
+    int rayon;
+    string couleur;
+    bool oriente = true;
+    cout << "Rayon ? "; cin >> rayon;
+    cout << "Couleur (RED / GREEN / BLUE) ? "; cin >> couleur;
+
+    sommet sd(1,"Paris");
+    sommet s2(2,"Londres");
+    sommet s3(3,"Madrid");
+    sommet sf(4,"Rome");
+
+    sd.setCoordonnees(Coordonnees(300, 300));
+    s2.setCoordonnees(Coordonnees(300, 100));
+    s3.setCoordonnees(Coordonnees(500, 150));
+    sf.setCoordonnees(Coordonnees(500, 500));
+
+    //arcDUnGraphe* a12 = new arcDUnGraphe(sd,s2);
+    //arcDUnGraphe* a13 = new arcDUnGraphe(sd,s3);
+    //arcDUnGraphe* a21 = new arcDUnGraphe(s2,sd);
+    //arcDUnGraphe* a23 = new arcDUnGraphe(s2,s3);
+    //arcDUnGraphe* a3f = new arcDUnGraphe(s3,sf);
+
+    arcDUnGraphe* ap12 = new arcAvecPoids(sd,s2,2);
+    arcDUnGraphe* ap13 = new arcAvecPoids(sd,s3,3);
+    arcDUnGraphe* ap21 = new arcAvecPoids(s2,sd,5);
+    arcDUnGraphe* ap23 = new arcAvecPoids(s2,s3,10);
+    arcDUnGraphe* ap3f = new arcAvecPoids(s3,sf,0);
+
+    graphe monGraphe;
+
+    monGraphe.ajouterUnSommetAuGraphe(sd);
+    monGraphe.ajouterUnSommetAuGraphe(s2);
+    monGraphe.ajouterUnSommetAuGraphe(s3);
+    monGraphe.ajouterUnSommetAuGraphe(sf);
+
+    monGraphe.ajouterUnArcAuGraphe(ap12);
+    monGraphe.ajouterUnArcAuGraphe(ap13);
+    monGraphe.ajouterUnArcAuGraphe(ap21);
+    monGraphe.ajouterUnArcAuGraphe(ap23);
+    monGraphe.ajouterUnArcAuGraphe(ap3f);
+
+    DessinateurGraphe d;
+    d.dessinerGraphe(monGraphe, oriente, rayon, couleur);
+}
+
+void testOriente()
+{
+    sommet s1(1,"Paris");
+    sommet s2(2,"Londres");
+    sommet s3(3,"Madrid");
+
+    arcDUnGraphe* a12 = new arcDUnGraphe(s1,s2);
+    arcDUnGraphe* a13 = new arcDUnGraphe(s1,s3);
+    arcDUnGraphe* a21 = new arcDUnGraphe(s2,s1);
+    arcDUnGraphe* a23 = new arcDUnGraphe(s2,s3);
+    arcDUnGraphe* a31 = new arcDUnGraphe(s3,s1);
+    arcDUnGraphe* a32 = new arcDUnGraphe(s3,s2);
+
+    graphe monGraphe;
+
+    monGraphe.ajouterUnSommetAuGraphe(s1);
+    monGraphe.ajouterUnSommetAuGraphe(s2);
+    monGraphe.ajouterUnSommetAuGraphe(s3);
+
+    monGraphe.ajouterUnArcAuGraphe(a12);
+    monGraphe.ajouterUnArcAuGraphe(a13);
+
+    monGraphe.ajouterUnArcAuGraphe(a21);
+    monGraphe.ajouterUnArcAuGraphe(a23);
+
+    monGraphe.ajouterUnArcAuGraphe(a31);
+    monGraphe.ajouterUnArcAuGraphe(a32);
+
+    bool test = monGraphe.estOriente();
+    string rep = (test == true) ? "Oui" : "Non"; // SENSE DONNE "Non"
+    cout<<"Reponse : "<<rep<<endl;
+
+}
+
+void testMatrice()
+{
+    sommet s1(1, "Paris");
+    sommet s2(2, "Londres");
+    sommet s3(3, "Madrid");
+
+    arcDUnGraphe* a12 = new arcDUnGraphe(s1, s2);
+    arcDUnGraphe* a13 = new arcDUnGraphe(s1, s3);
+    arcDUnGraphe* a21 = new arcDUnGraphe(s2, s1);
+    arcDUnGraphe* a23 = new arcDUnGraphe(s2, s3);
+    arcDUnGraphe* a31 = new arcDUnGraphe(s3, s1);
+    arcDUnGraphe* a32 = new arcDUnGraphe(s3, s2);
+
+    graphe monGraphe;
+    monGraphe.ajouterUnSommetAuGraphe(s1);
+    monGraphe.ajouterUnSommetAuGraphe(s2);
+    monGraphe.ajouterUnSommetAuGraphe(s3);
+    monGraphe.ajouterUnArcAuGraphe(a12);
+    monGraphe.ajouterUnArcAuGraphe(a13);
+    monGraphe.ajouterUnArcAuGraphe(a21);
+    monGraphe.ajouterUnArcAuGraphe(a23);
+    monGraphe.ajouterUnArcAuGraphe(a31);
+    monGraphe.ajouterUnArcAuGraphe(a32);
+
+    int** mad;
+    monGraphe.creeMatriceAdajenceAPartirDuGraphe(monGraphe, mad);
+
+    int n = mad[0][0]; // nb sommets
+    int m = mad[0][1]; // nb arcs
+
+    std::cout << "\n=== MATRICE D'ADJACENCE ===\n\n";
+
+    // En-tête colonnes
+    std::cout << "     ";
+    for (int j = 0; j <= n; ++j)
+        std::cout << j << "       ";
+    std::cout << "\n    ";
+    for (int j = 0; j <= n; ++j)
+        std::cout << "--------";
+    std::cout << "\n";
+
+    // Affichage des lignes
+    for (int i = 0; i <= n; ++i) {
+        std::cout << i << " | ";
+        for (int j = 0; j <= n; ++j) {
+            if (i == 0 && j >= 2)
+                std::cout << "Null    ";
+            else if (j == 0 && i >= 1)
+                std::cout << "Null    ";
+            else if (mad[i][j] == 0 && i > 0 && j > 0)
+                std::cout << "Null    ";
+            else
+                std::cout << mad[i][j] << "       ";
+        }
+        std::cout << "\n";
+    }
+
+    // Libération mémoire
+    for (int i = 0; i <= n; ++i)
+        delete[] mad[i];
+    delete[] mad;
+}
+
+
+void tester()
+{
+    int larg = 600;
+    int haut = 600;
+    opengraphsize(larg,haut );
+
+    test();
+    getch();
+    closegraph();
+}
+
+void test2()
+{
+    graphe g;
+    bool orientationPourFutur;
+
+    DessinateurGraphe dessinateur;
+    ConstructeurGraphique constructeur(g, dessinateur, 10, "BLUE");
+
+    constructeur.lancerSaisie(orientationPourFutur);
+    //g.afficherLeGraphe();
+}
+
+void test3()
+{
+    graphe g;
+    GestionnaireFichierGraphe gestionnaire;
+
+    // Charger depuis fichier
+   gestionnaire.chargerDepuisFichier("test1.txt", g);
+   cout<<"Fichier bien charge !! \n";
+
+    // Sauvegarder
+    gestionnaire.sauvegarderDansFichier("sauvegarde.txt", g);
+    cout<<"Fichier bien sauvegarde !! \n";
+}
+
+void test4()
+{
+    AideAlgorithmique aide;
+    aide.afficherAideInterface();
+    //aide.afficherDantzig();
+    //aide.afficherDijkstra();
+    //aide.afficherKruskal();
+    //aide.afficherOrdonnancement();
+    //aide.afficherPointsArticulation();
+    //aide.afficherRang();
+    //aide.afficherTarjan();
+}
+
+int main()
+{
+    //tester();
+    //testOriente();
+    //testMatrice();
+    //test2();
+    //test3();
+    //test4();
+
+    Interface i;
+    i.lancer();
+
+    return 0;
+}

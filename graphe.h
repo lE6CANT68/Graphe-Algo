@@ -19,7 +19,8 @@ class graphe
         graphe(vector<sommet> tabSommets, vector<arcDUnGraphe*> tabArcs);
         ~graphe();
 
-        vector<sommet> renvoyerListeSommetsDuGraphe() const;
+        vector<sommet> renvoyerListeSommetsDuGraphe() const; // Non modifiable
+        vector<sommet>& renvoyerListeSommetsDuGraphe(); // Modifiable
         vector<arcDUnGraphe*> renvoyerListeArcsDuGraphe() const;
 
         void ajouterUnSommetAuGraphe(const sommet &s);
@@ -28,13 +29,15 @@ class graphe
         void supprimerUnSommetDuGraphe(const sommet &s);
         void supprimerUnArcDuGraphe(arcDUnGraphe* a);
 
-        void afficherLeGraphe();
+        void viderGraphe();
 
         void creeFsAPartirDuGraphe(const graphe& g, int*&fs);
         void creeAPSAPartirDeFs(int*fs, int *&aps);
         void creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdajacence);
-        //vector<vector<int>> creerListeAdjacence() const;
         void creerListeAdjacence(int**& adj, int*& tailles) const;
+
+        bool estOriente() const;
+        bool arcExisteDeja(int idSrc, int idDst);
 
 };
 

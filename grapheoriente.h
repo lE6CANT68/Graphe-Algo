@@ -12,16 +12,15 @@ private:
 
 public:
     GrapheOriente(vector<sommet> tabSommets, vector<arcDUnGraphe*> tabArcs);
-    std::vector<int> AlgorithmeDuRang(std::vector<int> d_rangs);
-    void afficherRangs() const;
-
+    void AlgorithmeDuRang(int*& rangs);
 
     void dfsTarjan(int s, int** adj, int* tailles, int* num, int* ro, int* cfc,
                bool* enPileTarjan, int* pileTarjan, int& sommetPile, int& p, int& k);
     void trouverComposantesFortementConnexes();
     void Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& pr);
-    void Dantzig(int** L, const int** C, int n);
-    int Ordonnancement(int* fs, int* aps, int* durees);
+    void Dantzig(int** &L, const int** C, int n);
+    void Ordonnancement(int* fs, int* aps, int* durees, int*& tot, int*& tard, int*& marge, int& dureeTotale);
 };
+
 
 #endif // GRAPHEORIENTE_H

@@ -19,6 +19,11 @@ string sommet::renvoyerEtiquette() const
     return d_etiquette;
 }
 
+void sommet::setInformationsSommets(int id, string etiquette) {
+    d_identifiant = id;
+    d_etiquette = etiquette;
+}
+
 Coordonnees sommet::getCoordonnees() const { return d_coord; }
 
 void sommet::setCoordonnees(const Coordonnees& c) { d_coord = c; }

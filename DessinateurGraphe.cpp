@@ -13,6 +13,8 @@ void DessinateurGraphe::dessinerSommet(const sommet& s, int rayon, const std::st
     else if (couleur == "BLUE") setfillstyle(SOLID_FILL, BLUE);
     else setfillstyle(SOLID_FILL, BLACK);
 
+    settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+
     // Dessin du cercle
     fillellipse(x, y, rayon, rayon);
 
@@ -72,6 +74,7 @@ void DessinateurGraphe::dessinerArc(const arcDUnGraphe& a, bool oriente) {
 }
 
 void DessinateurGraphe::dessinerGraphe(const graphe& g, bool oriente, int rayon, const string& couleur) {
+
     const auto& arcs = g.renvoyerListeArcsDuGraphe();
     const auto& sommets = g.renvoyerListeSommetsDuGraphe();
 

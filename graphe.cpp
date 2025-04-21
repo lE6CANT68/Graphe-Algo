@@ -24,8 +24,13 @@ graphe::~graphe()
 }
 
 
-// M�thodes de la classe graphe
+// Methodes de la classe graphe
 vector<sommet> graphe::renvoyerListeSommetsDuGraphe() const
+{
+    return d_sommets;
+}
+
+vector<sommet>& graphe::renvoyerListeSommetsDuGraphe()
 {
     return d_sommets;
 }
@@ -67,28 +72,12 @@ void graphe::supprimerUnArcDuGraphe(arcDUnGraphe* a)
     delete a;
 }
 
-void graphe::afficherLeGraphe()
-{
-    cout << "Sommets du graphe:" << endl;
-    for (const auto& s : d_sommets)
-    {
-        cout << "Sommet ID: " << s.renvoyerIdentifiant() << ", Etiquette: " << s.renvoyerEtiquette() << endl;
-    }
-    cout << "\nArcs du graphe:" << endl;
-    for (const auto& a : d_arcs)
-    {
-        arcAvecPoids* ap = dynamic_cast<arcAvecPoids*>(a);
-        if (ap)
-        {
-            cout << "Arc avec poids de " << ap->renvoyerSommetSource()->renvoyerIdentifiant() << " a " << ap->renvoyerSommetDestination()->renvoyerIdentifiant()
-                 << " avec poids: " << ap->renvoyerPoidsArc() << endl;
-        }
-        else
-        {
-            cout << "Arc sans poids de " << a->renvoyerSommetSource()->renvoyerIdentifiant() << " a " << a->renvoyerSommetDestination()->renvoyerIdentifiant() << endl;
-        }
-    }
+void graphe::viderGraphe() {
+    d_sommets.clear();
+    for (auto a : d_arcs) delete a;
+    d_arcs.clear();
 }
+
 
 void graphe::creeFsAPartirDuGraphe(const graphe& g, int*& fs)
 {
@@ -146,45 +135,39 @@ void graphe::creeAPSAPartirDeFs(int *fs, int *&aps) {
     }
 }
 
-void graphe::creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int **&matAdajacence)
+void graphe::creeMatriceAdajenceAPartirDuGraphe(const graphe& g, int**& matAdajacence)
 {
     int n = g.d_sommets.size();
+    int m = g.d_arcs.size();
 
-    // Allocation de la matrice d'adjacence
-    matAdajacence = new int*[n];
-    for (int i = 0; i < n; ++i)
-    {
-        matAdajacence[i] = new int[n]{}; // Initialisation � 0
+    // Allouer une matrice de (n+1) x (n+1) pour inclure la ligne/colonne 0
+    matAdajacence = new int*[n + 1];
+    for (int i = 0; i <= n; ++i) {
+        matAdajacence[i] = new int[n + 1];
+        for (int j = 0; j <= n; ++j)
+            matAdajacence[i][j] = 0;
     }
 
-    // Remplissage de la matrice d'adjacence
-    for (const auto& arc : g.d_arcs)
-    {
-        int src = arc->renvoyerSommetSource()->renvoyerIdentifiant() - 1;
-        int dest = arc->renvoyerSommetDestination()->renvoyerIdentifiant() - 1;
+    // Mettre le nombre de sommets et d’arcs dans [0][0] et [0][1]
+    matAdajacence[0][0] = n;
+    matAdajacence[0][1] = m;
 
-        arcAvecPoids* ap = dynamic_cast<arcAvecPoids*>(arc);
+    // Remplir la matrice à partir des arcs
+    for (const auto& arc : g.d_arcs) {
+        int src = arc->renvoyerSommetSource()->renvoyerIdentifiant();
+        int dest = arc->renvoyerSommetDestination()->renvoyerIdentifiant();
+
+        const arcAvecPoids* ap = dynamic_cast<arcAvecPoids*>(arc);
         if (ap)
-            matAdajacence[src][dest] = ap->renvoyerPoidsArc(); // Stocker le poids
+            matAdajacence[src][dest] = ap->renvoyerPoidsArc();
         else
-            matAdajacence[src][dest] = 1; // Arc sans poids
+            matAdajacence[src][dest] = 1;
     }
 }
 
-/*vector<vector<int>> graphe::creerListeAdjacence() const {
-    int n = d_sommets.size();
-    vector<vector<int>> adj(n);
-    for (const auto& arc : d_arcs) {
-        int u = arc->renvoyerSommetSource()->renvoyerIdentifiant() - 1; // normalisé
-        int v = arc->renvoyerSommetDestination()->renvoyerIdentifiant() - 1;
-        adj[u].push_back(v);
-    }
-    return adj;
-}
-*/
 void graphe::creerListeAdjacence(int**& adj, int*& tailles) const {
     int n = d_sommets.size();
-    
+
     // 1. Compter le nombre de successeurs pour chaque sommet
     tailles = new int[n](); // tailles[i] = nombre de successeurs de i
     for (const auto& arc : d_arcs) {
@@ -209,3 +192,36 @@ void graphe::creerListeAdjacence(int**& adj, int*& tailles) const {
 
     delete[] compteur;
 }
+
+bool graphe::estOriente() const
+{
+    for (const auto& arc : d_arcs) {
+        int idSource = arc->renvoyerSommetSource()->renvoyerIdentifiant();
+        int idDest = arc->renvoyerSommetDestination()->renvoyerIdentifiant();
+
+        bool inverseExiste = false;
+        for (const auto& autre : d_arcs) {
+            if (autre->renvoyerSommetSource()->renvoyerIdentifiant() == idDest &&
+                autre->renvoyerSommetDestination()->renvoyerIdentifiant() == idSource) {
+                inverseExiste = true;
+                break;
+            }
+        }
+
+        if (!inverseExiste) return true;  // Si l'inverse n'existe pas, c'est orienté
+    }
+    return false;  // Tous les arcs ont leur inverse → non orienté
+}
+
+bool graphe::arcExisteDeja(int idSrc, int idDst) {
+    for (const auto& a : d_arcs) {
+        int srcId = a->renvoyerSommetSource()->renvoyerIdentifiant();
+        int dstId = a->renvoyerSommetDestination()->renvoyerIdentifiant();
+
+        // On interdit uniquement si exactement le même arc existe déjà
+        if (srcId == idSrc && dstId == idDst)
+            return true;
+    }
+    return false;
+}
+

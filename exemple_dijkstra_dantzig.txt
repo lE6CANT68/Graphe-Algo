@@ -1,0 +1,25 @@
+# Sommets
+1 Paris
+2 Lyon
+3 Marseille
+4 Toulouse
+5 Bordeaux
+6 Lille
+7 Strasbourg
+8 Nantes
+9 Rennes
+10 Nice
+
+# ArcsAvecPoids
+1 2 450
+1 6 220
+2 3 300
+2 7 400
+3 10 200
+4 5 250
+5 1 600
+6 9 600
+7 3 400
+8 5 340
+9 8 100
+10 4 480

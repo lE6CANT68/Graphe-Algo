@@ -13,10 +13,12 @@ class ConstructeurGraphique {
 
         void ajouterSommet(int id, bool avecNom);
         void ajouterArc(bool avecPoids, bool oriente);
+        void viderEvenementsSouris();
+        void attendreClic();
 
     public:
         ConstructeurGraphique(graphe& g, DessinateurGraphe& d, int rayon, const std::string& couleur);
-        void lancerSaisie();
+        void lancerSaisie(bool& orientation);
 };
 
 #endif // CONSTRUCTEURGRAPHIQUE_H

@@ -65,7 +65,7 @@ static void dfs(int u, int parent, int& temps,
 /*------------------------------------------------------------------------
  * Constructeur de GrapheNonOriente.
  *------------------------------------------------------------------------*/
-GrapheNonOriente::GrapheNonOriente(const vector<sommet>& listeSommets, const vector<arc*>& listeArcs)
+GrapheNonOriente::GrapheNonOriente(const vector<sommet>& listeSommets, const vector<arcDUnGraphe*>& listeArcs)
     : graphe(listeSommets, listeArcs)
 {
 }
@@ -119,7 +119,7 @@ vector<pair<int, int>> GrapheNonOriente::trouverIsthmies() {
     int temps = 0;
     for (int i = 0; i < n; i++) {
         if (!visite[i])
-            explorerAP(i, -1, temps, adj, visite, decouverte, bas, pointArticulation, ponts);
+            dfs(i, -1, temps, adj, visite, decouverte, bas, pointArticulation, ponts);
     }
     return ponts;
 }

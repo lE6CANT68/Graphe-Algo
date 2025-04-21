@@ -5,78 +5,59 @@
 GrapheOriente::GrapheOriente(vector<sommet> tabSommets, vector<arcDUnGraphe*> tabArcs)
     : graphe(tabSommets, tabArcs) {}
 
-std::vector<int> GrapheOriente::AlgorithmeDuRang(std::vector<int> d_rangs) {
+void GrapheOriente::AlgorithmeDuRang(int*& rangs) {
     std::vector<sommet> sommets = renvoyerListeSommetsDuGraphe();
     std::vector<arcDUnGraphe*> arcs = renvoyerListeArcsDuGraphe();
+    int n = sommets.size();
 
-    // Initialiser les rangs à -1 (non calculé)
-    d_rangs.resize(sommets.size(), -1);
+    // Allouer le tableau de rangs (+1 pour stocker la taille à l’indice 0)
+    rangs = new int[n + 1];
 
+    // Initialiser tous les rangs à -1
+    for (int i = 0; i < n + 1; ++i)
+        rangs[i] = -1;
 
-    // Calculer le degré d'entrée de chaque sommet
-    std::vector<int> degreEntree(sommets.size(), 0);
+    // Calculer le degré d’entrée
+    std::vector<int> degreEntree(n, 0);
     for (arcDUnGraphe* a : arcs) {
         int destId = a->renvoyerSommetDestination()->renvoyerIdentifiant();
         degreEntree[destId]++;
     }
 
-    // pile pour le tri topologique
+    // Pile (file) pour le tri topologique
     std::queue<int> pile;
 
-    // Ajouter les sommets de degré d'entrée 0
-    for (size_t i = 0; i < sommets.size(); ++i) {
+    for (int i = 0; i < n; ++i) {
         if (degreEntree[i] == 0) {
             pile.push(i);
-            d_rangs[i] = 0; // Les sommets sans prédécesseurs ont un rang de 0
+            rangs[i + 1] = 0;  // Rang 0 pour les sources
         }
     }
 
-    // Calculer les rangs
+    // Parcours des sommets pour calculer les rangs
     while (!pile.empty()) {
         int sommetCourant = pile.front();
         pile.pop();
 
-        // Parcourir tous les arcs pour trouver les successeurs
         for (arcDUnGraphe* a : arcs) {
             if (a->renvoyerSommetSource()->renvoyerIdentifiant() == sommetCourant) {
                 int succId = a->renvoyerSommetDestination()->renvoyerIdentifiant();
                 degreEntree[succId]--;
 
-                // Mettre à jour le rang du successeur
-                d_rangs[succId] = std::max(d_rangs[succId], d_rangs[sommetCourant] + 1);
+                // Mettre à jour le rang
+                rangs[succId + 1] = std::max(rangs[succId + 1], rangs[sommetCourant + 1] + 1);
 
-                // Si le sommet n'a plus de prédécesseurs, l'ajouter à la pile
-                if (degreEntree[succId] == 0) {
+                if (degreEntree[succId] == 0)
                     pile.push(succId);
-                }
             }
         }
     }
 
-    d_rangs.insert(d_rangs.begin(), sommets.size());
-    return d_rangs;
+    // Ajouter la taille du tableau à l’indice 0
+    rangs[0] = n;
 }
 
-/*void GrapheOriente::afficherRangs() const {
-    std::cout << "Rangs des sommets :" << std::endl;
-    std::cout<<"[";
-    for (size_t i = 0; i < d_rangs.size(); ++i){
-        std::cout<<d_rangs[i]<<" | ";
-    }
-    std::cout<<"]";
-
-    std::vector<sommet> sommets = renvoyerListeSommetsDuGraphe();
-    std::cout << "Rangs des sommets :" << std::endl;
-    for (size_t i = 0; i < sommets.size(); ++i) {
-        std::cout << "Sommet " << sommets[i].renvoyerIdentifiant()
-                  << " (" << sommets[i].renvoyerEtiquette()
-                  << ") : rang " << d_rangs[i] << std::endl;
-    }
-}*/
-
-
-
-void dfsTarjan(int s, int** adj, int* tailles, int* num, int* ro, int* cfc,
+void GrapheOriente::dfsTarjan(int s, int** adj, int* tailles, int* num, int* ro, int* cfc,
                bool* enPileTarjan, int* pileTarjan, int& sommetPile, int& p, int& k)
 {
     p++;
@@ -128,10 +109,6 @@ void GrapheOriente::trouverComposantesFortementConnexes() {
         if (num[s] == 0) {
             dfsTarjan(s, adj, tailles, num, ro, cfc, enPileTarjan, pileTarjan, sommetPile, p, k);
         }
-    }
-
-    for (int i = 0; i < n; ++i) {
-        std::cout << "Sommet " << i + 1 << " appartient à la composante C" << cfc[i] << std::endl;
     }
 
     // Libération mémoire
@@ -205,7 +182,7 @@ void  GrapheOriente::Dijkstra(int* fs, int* aps, int** p, int s, int*& d, int*& 
 // C : matrice des coûts directs (dite matrice initiale)
 // n : nombre de sommets (en supposant indices de 1 à n)
 
-void GrapheOriente::Dantzig(int** L, const int** C, int n) {
+void GrapheOriente::Dantzig(int** &L, const int** C, int n) {
     // On considère que pour k=1 la matrice L est déjà initialisée avec C.
     // Ensuite, on ajoute progressivement les sommets intermédiaires k+1, pour k allant de 1 à n-1.
     for (int k = 1; k < n; k++) {
@@ -247,13 +224,17 @@ void GrapheOriente::Dantzig(int** L, const int** C, int n) {
     }
 }
 
-int GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
+void GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees, int*& tot, int*& tard, int*& marge, int& dureeTotale)
+{
     int n = aps[0];
-    std::vector<int> tot(n, 0);  // Dates au plus tôt
-    std::vector<int> tard(n);    // Dates au plus tard
-    std::vector<int> marge(n);   // Marges
 
-    // Phase avant : calcul des dates au plus tôt
+    tot = new int[n];
+    tard = new int[n];
+    marge = new int[n];
+
+    for (int i = 0; i < n; ++i) tot[i] = 0;
+
+    // Phase avant
     for (int i = 0; i < n; ++i) {
         for (int k = aps[i]; fs[k] != 0; ++k) {
             int j = fs[k];
@@ -262,13 +243,11 @@ int GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
         }
     }
 
-    int dureeTotale = *std::max_element(tot.begin(), tot.end());
+    dureeTotale = *std::max_element(tot, tot + n);
 
-    // Initialiser toutes les dates au plus tard à la durée totale du projet
-    for (int i = 0; i < n; ++i)
-        tard[i] = dureeTotale;
+    for (int i = 0; i < n; ++i) tard[i] = dureeTotale;
 
-    // Phase arrière : calcul des dates au plus tard
+    // Phase arrière
     for (int i = n - 1; i >= 0; --i) {
         for (int k = aps[i]; fs[k] != 0; ++k) {
             int j = fs[k];
@@ -277,7 +256,7 @@ int GrapheOriente::Ordonnancement(int* fs, int* aps, int* durees) {
         }
     }
 
-    return dureeTotale;
+    for (int i = 0; i < n; ++i)
+        marge[i] = tard[i] - tot[i];
 }
-
 

@@ -21,6 +21,8 @@ class sommet
         int renvoyerIdentifiant() const;
         string renvoyerEtiquette() const;
 
+        void setInformationsSommets(int id, string etiquette);
+
         Coordonnees getCoordonnees() const;
         void setCoordonnees(const Coordonnees& c);
 };
