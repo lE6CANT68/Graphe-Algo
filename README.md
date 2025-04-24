@@ -49,6 +49,13 @@ L’interface permet à l’utilisateur de :
 
 ---
 
+## Visualiser le projet : UML, classes
+
+- Décompresser le fichier `html_Doxygen_Projet`
+- Ouvrer `index.html` sur votre navigateur
+
+---
+
 ## 📁 Structure du projet
 
 ```
