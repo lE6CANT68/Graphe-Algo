@@ -87,9 +87,9 @@ Plusieurs fichiers de tests ont été créés pour vérifier les algorithmes :
 - Contributions à l’interface, aux structures de graphes, aux algorithmes et à la gestion graphique.
 - **Cantin Fanger [Développeur]**
 - Contributions à la création des algorithmes et aux tests
-- - **Logan Pommier [Développeur]**
+- **Logan Pommier [Développeur]**
 - Contributions à la création des algorithmes et aux tests
-- - **Samy Zéroual [Développeur]**
+- **Samy Zéroual [Développeur]**
 - Contributions à la création des algorithmes et aux tests
 
 ---
