@@ -74,10 +74,11 @@ PROJET_GRAPHES_ET_ALGO/
 ## 🧪 Tests & Exemples
 
 Plusieurs fichiers de tests ont été créés pour vérifier les algorithmes :
-- `test_dijkstra.txt` – graphe orienté pondéré
-- `test_ordonnancement.txt` – graphe de tâches avec dépendances
-- `test_tarjan.txt` – graphe orienté avec composantes fortement connexes
-- `test_non_oriente.txt` – graphe pour détection de points d'articulation et isthmes
+- `exemple_dijkstra_dantzig.txt` – graphe orienté pondéré
+- `exemple_ordonnancement.txt` – graphe de tâches avec dépendances
+- `exemple_tarjan.txt` – graphe orienté avec composantes fortement connexes
+- `exemple_rang.txt` - graphe orienté avec arcs non pondérés
+- `exemple_articulation_isthmes.txt` – graphe non orienté pour détection de points d'articulation et isthmes
 
 ---
 
