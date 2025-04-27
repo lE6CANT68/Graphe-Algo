@@ -1208,8 +1208,6 @@ void Interface::lancerKruskal() {
         d_gestionnaire.sauvegarderDansFichier(nomFichier, *mst);
         cout << "Graphe sauvegarde dans " << nomFichier << "\n";
     }
-
-    delete mst;
 }
 
 
