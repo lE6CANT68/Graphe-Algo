@@ -17,7 +17,7 @@ using std::sort;
  *------------------------------------------------------------------------*/
 static vector<vector<int>> construireListeAdjacence(const graphe& g) {
     int n = g.renvoyerListeSommetsDuGraphe().size();
-    vector<vector<int>> adj(n);
+    vector<vector<int>> adj(n+1);
     vector<arcDUnGraphe*> listeArcs = g.renvoyerListeArcsDuGraphe();
     for (arcDUnGraphe* a : listeArcs) {
         int u = a->renvoyerSommetSource()->renvoyerIdentifiant();
