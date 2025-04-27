@@ -53,7 +53,7 @@ void Interface::effacerContenuConsole(){
 void Interface::pauseConsole() {
     cout << "\n[Appuyez sur ENTREE pour continuer...]";
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Vider le buffer
-    cin.get(); // Attente sur entrée
+    cin.get(); // Attente sur entrÃ©e
 }
 
 void Interface::choixOrientation(){
@@ -157,7 +157,7 @@ bool Interface::verificationCyclePresentDansGrapheOriente() const {
     std::vector<bool> visite(n, false);
     std::vector<bool> dansPile(n, false);
 
-    // Fonction DFS récursive
+    // Fonction DFS rÃ©cursive
     std::function<bool(int)> dfs = [&](int u) {
         visite[u] = true;
         dansPile[u] = true;
@@ -175,7 +175,7 @@ bool Interface::verificationCyclePresentDansGrapheOriente() const {
     for (int i = 0; i < n; ++i) {
         if (!visite[i]) {
             if (dfs(i)) {
-                // Libération mémoire
+                // LibÃ©ration mÃ©moire
                 for (int i = 0; i < n; ++i) delete[] adj[i];
                 delete[] adj;
                 delete[] tailles;
@@ -184,7 +184,7 @@ bool Interface::verificationCyclePresentDansGrapheOriente() const {
         }
     }
 
-    // Libération mémoire
+    // LibÃ©ration mÃ©moire
     for (int i = 0; i < n; ++i) delete[] adj[i];
     delete[] adj;
     delete[] tailles;
@@ -199,14 +199,14 @@ bool Interface::verificationCyclePoidsNegatifPresent() const {
     int n = sommets.size();
 
     std::vector<int> distance(n, INT_MAX);
-    distance[0] = 0; // Choix arbitraire du sommet de départ (index 0)
+    distance[0] = 0; // Choix arbitraire du sommet de dÃ©part (index 0)
 
     for (int i = 1; i < n; ++i) {
         for (const auto& arc : arcs) {
             int u = arc->renvoyerSommetSource()->renvoyerIdentifiant() - 1;
             int v = arc->renvoyerSommetDestination()->renvoyerIdentifiant() - 1;
 
-            int poids = 1; // Valeur par défaut
+            int poids = 1; // Valeur par dÃ©faut
             if (auto* pondere = dynamic_cast<arcAvecPoids*>(arc))
                 poids = pondere->renvoyerPoidsArc();
 
@@ -216,7 +216,7 @@ bool Interface::verificationCyclePoidsNegatifPresent() const {
         }
     }
 
-    // Une passe supplémentaire : si amélioration possible -> cycle négatif
+    // Une passe supplÃ©mentaire : si amÃ©lioration possible -> cycle nÃ©gatif
     for (const auto& arc : arcs) {
         int u = arc->renvoyerSommetSource()->renvoyerIdentifiant() - 1;
         int v = arc->renvoyerSommetDestination()->renvoyerIdentifiant() - 1;
@@ -226,7 +226,7 @@ bool Interface::verificationCyclePoidsNegatifPresent() const {
             poids = pondere->renvoyerPoidsArc();
 
         if (distance[u] != INT_MAX && distance[u] + poids < distance[v]) {
-            return true;  // Cycle de poids négatif détecté
+            return true;  // Cycle de poids nÃ©gatif dÃ©tectÃ©
         }
     }
 
@@ -250,14 +250,14 @@ void Interface::messageErreurCyclePresent(std::string nomAlgo) {
 void Interface::messageErreurCyclePoidsNegatifsPresent() {
     effacerContenuConsole();
     cout << "\n[ERREUR] Ce graphe contient un **cycle de poids negatif**.\n";
-    cout << "L algorithme de Dantzig ne peut pas être applique sur un tel graphe.\n";
+    cout << "L algorithme de Dantzig ne peut pas Ãªtre applique sur un tel graphe.\n";
     pauseConsole();
 }
 
 void Interface::messageErreurPoidsNegatifsPresent() {
     effacerContenuConsole();
     cout << "\n[ERREUR] Ce graphe contient **des arcs avec des poids negatifs**.\n";
-    cout << "L algorithme de Dijkstra ne fonctionne qu’avec des poids positifs ou nuls.\n";
+    cout << "L algorithme de Dijkstra ne fonctionne quâ€™avec des poids positifs ou nuls.\n";
     pauseConsole();
 }
 
@@ -276,10 +276,10 @@ void Interface::reinitialisation() {
         cout << "Cause : aucun arcs dans le graphe pour execution algo ! "<<endl;
     }
 
-    // Réinitialisation du graphe
+    // RÃ©initialisation du graphe
     d_graphe.viderGraphe();
 
-    // Réinitialisation des attributs d'affichage
+    // RÃ©initialisation des attributs d'affichage
     d_couleur = "BLACK";
     d_orientationGraphe = false;
     d_nommerSommets = false;
@@ -364,7 +364,7 @@ void Interface::creerGrapheClavier() {
         cin >> dst;
 
         if (src == dst) {
-            cout << "Erreur : Un arc ne peut pas relier un sommet à lui-même.\n";
+            cout << "Erreur : Un arc ne peut pas relier un sommet Ã  lui-mÃªme.\n";
             continue;
         }
 
@@ -373,7 +373,7 @@ void Interface::creerGrapheClavier() {
             cin >> poids;
         }
 
-        // Vérifier si l’arc existe déjà
+        // VÃ©rifier si lâ€™arc existe dÃ©jÃ 
         if (d_graphe.arcExisteDeja(src, dst)) {
             cout << "Erreur: Cet arc existe deja, ajout ignore.\n";
         } else {
@@ -468,10 +468,10 @@ void Interface::menuChoixSaisieGraphe() {
 void Interface::revenirSurMenuSaisieGraphe(){
     effacerContenuConsole();
 
-    // Réinitialisation du graphe (nouvelle instance vide)
+    // RÃ©initialisation du graphe (nouvelle instance vide)
     d_graphe.viderGraphe();
 
-    // Réinitialisation des attributs d'affichage
+    // RÃ©initialisation des attributs d'affichage
     d_couleur = "BLACK";
     d_orientationGraphe = false;
     d_nommerSommets = false;
@@ -556,7 +556,7 @@ void Interface::menuChoixSauvegarde() {
     do{
         cout<<"Voulez-vous sauvegarder votre fichier ? (O/N) \n";
         cin>>choix;
-    }while(choix != 'o' || choix != '0' || choix != 'n' || choix != 'N');
+    }while(choix != 'o' && choix != '0' && choix != 'n' && choix != 'N');
 
     if(choix == 'o' || choix == 'O')
         sauvegarderGrapheDansFichier();
@@ -628,7 +628,7 @@ void Interface::afficherFS_APS(){
         cout << i << "   ";
     cout << "\n";
 
-    // Libération mémoire si nécessaire (selon implémentation de creeFs/creeAPS)
+    // LibÃ©ration mÃ©moire si nÃ©cessaire (selon implÃ©mentation de creeFs/creeAPS)
     delete[] fs;
     delete[] aps;
 }
@@ -642,7 +642,7 @@ void Interface::afficherMatriceAdjacence() {
 
     cout << "\n=== MATRICE D'ADJACENCE ===\n\n";
 
-    // En-tête colonnes
+    // En-tÃªte colonnes
     cout << "     ";
     for (int j = 0; j <= n; ++j)
         cout << j << "       ";
@@ -667,7 +667,7 @@ void Interface::afficherMatriceAdjacence() {
         cout << "\n";
     }
 
-    // Libération mémoire
+    // LibÃ©ration mÃ©moire
     for (int i = 0; i <= n; ++i)
         delete[] mad[i];
     delete[] mad;
@@ -711,7 +711,7 @@ void Interface::afficherRangs() {
         cout << "  " << i << "\t|\t" << rang[i] << "\n";
     }
 
-    delete[] rang; // Libération mémoire
+    delete[] rang; // LibÃ©ration mÃ©moire
 
     pauseConsole();
 }
@@ -722,15 +722,15 @@ void Interface::lancerTarjan() {
     std::vector<arcDUnGraphe*> arcs = d_graphe.renvoyerListeArcsDuGraphe();
     int n = sommets.size();
 
-    // Conversion vers graphe orienté
+    // Conversion vers graphe orientÃ©
     GrapheOriente go(sommets, arcs);
 
-    // Création liste d’adjacence
+    // CrÃ©ation liste dâ€™adjacence
     int** adj;
     int* tailles;
     go.creerListeAdjacence(adj, tailles);
 
-    // Allocation mémoire pour Tarjan
+    // Allocation mÃ©moire pour Tarjan
     int* num = new int[n]{};
     int* ro = new int[n]{};
     int* cfc = new int[n]{};
@@ -739,22 +739,22 @@ void Interface::lancerTarjan() {
     int sommetPile = 0;
     int p = 0, k = 0;
 
-    // Lancer Tarjan pour chaque sommet non visité
+    // Lancer Tarjan pour chaque sommet non visitÃ©
     for (int s = 0; s < n; ++s) {
         if (num[s] == 0) {
             go.dfsTarjan(s, adj, tailles, num, ro, cfc, enPileTarjan, pileTarjan, sommetPile, p, k);
         }
     }
 
-    // Affichage résultat
+    // Affichage rÃ©sultat
     std::cout << "\n=== COMPOSANTES FORTEMENT CONNEXES (CFC) ===\n";
     for (int i = 0; i < n; ++i) {
         std::string nom = sommets[i].renvoyerEtiquette();
         std::cout << "Sommet " << (nom.empty() ? std::to_string(i + 1) : nom)
-                  << " appartient à la composante C" << cfc[i] << "\n";
+                  << " appartient Ã  la composante C" << cfc[i] << "\n";
     }
 
-    // Libération mémoire
+    // LibÃ©ration mÃ©moire
     for (int i = 0; i < n; ++i) delete[] adj[i];
     delete[] adj;
     delete[] tailles;
@@ -772,7 +772,7 @@ void Interface::lancerDijkstra() {
     int* fs;
     int* aps;
 
-    // Construction FS & APS à partir du graphe
+    // Construction FS & APS Ã  partir du graphe
     d_graphe.creeFsAPartirDuGraphe(d_graphe, fs);
     d_graphe.creeAPSAPartirDeFs(fs, aps);
 
@@ -787,7 +787,7 @@ void Interface::lancerDijkstra() {
         for (int j = 1; j <= n; ++j)
             matricePoids[i][j] = MAXPOIDS;
 
-    // Remplir la matrice des poids à partir des arcs
+    // Remplir la matrice des poids Ã  partir des arcs
     for (const auto& arc : d_graphe.renvoyerListeArcsDuGraphe()) {
         int i = arc->renvoyerSommetSource()->renvoyerIdentifiant();
         int j = arc->renvoyerSommetDestination()->renvoyerIdentifiant();
@@ -795,7 +795,7 @@ void Interface::lancerDijkstra() {
         if (auto* ap = dynamic_cast<arcAvecPoids*>(arc))
             matricePoids[i][j] = ap->renvoyerPoidsArc();
         else
-            matricePoids[i][j] = 1; // Non pondéré, poids = 1
+            matricePoids[i][j] = 1; // Non pondÃ©rÃ©, poids = 1
     }
 
     int s;
@@ -805,13 +805,13 @@ void Interface::lancerDijkstra() {
     } while (s < 1 || s > n);
 
     int* d;  // Tableau des distances minimales
-    int* pr; // Tableau des prédécesseurs
+    int* pr; // Tableau des prÃ©dÃ©cesseurs
 
     // Algorithme de Dijkstra
     GrapheOriente go(d_graphe.renvoyerListeSommetsDuGraphe(), d_graphe.renvoyerListeArcsDuGraphe());
     go.Dijkstra(fs, aps, matricePoids, s, d, pr);
 
-    // Résultats
+    // RÃ©sultats
     cout << "\n=== Resultat de Dijkstra (depuis le sommet " << s << ") ===\n";
     cout << "Sommet\tDistance\tChemin\n";
 
@@ -834,7 +834,7 @@ void Interface::lancerDijkstra() {
         cout << "\n";
     }
 
-    // Libération mémoire
+    // LibÃ©ration mÃ©moire
     for (int i = 0; i <= n; ++i)
         delete[] matricePoids[i];
     delete[] matricePoids;
@@ -868,7 +868,7 @@ void Interface::lancerDantzig() {
         }
     }
 
-    // Remplir la matrice C avec les coûts des arcs
+    // Remplir la matrice C avec les coÃ»ts des arcs
     for (arcDUnGraphe* a : arcs) {
         int u = a->renvoyerSommetSource()->renvoyerIdentifiant();
         int v = a->renvoyerSommetDestination()->renvoyerIdentifiant();
@@ -885,7 +885,7 @@ void Interface::lancerDantzig() {
         for (int j = 1; j <= n; ++j)
             L[i] = new int[n + 1], L[i][j] = C[i][j];
 
-    // Exécuter l'algorithme de Dantzig
+    // ExÃ©cuter l'algorithme de Dantzig
     GrapheOriente go(sommets, arcs);
     go.Dantzig(L, (const int**)C, n);
 
@@ -906,7 +906,7 @@ void Interface::lancerDantzig() {
         std::cout << "\n";
     }
 
-    // Libération mémoire
+    // LibÃ©ration mÃ©moire
     for (int i = 1; i <= n; ++i) {
         delete[] C[i];
         delete[] L[i];
@@ -1104,7 +1104,7 @@ void Interface::afficherPointsArticulation() {
 
     bool aucun = true;
     for (int i = 0; articulation[i] != -1; ++i) {
-        int id = articulation[i] + 1; // +1 car indexé à 0
+        int id = articulation[i] + 1; // +1 car indexÃ© Ã  0
         auto& sommets = d_graphe.renvoyerListeSommetsDuGraphe();
         auto it = std::find_if(sommets.begin(), sommets.end(),
                                [id](const sommet& s) { return s.renvoyerIdentifiant() == id; });
@@ -1142,7 +1142,7 @@ void Interface::afficherIsthmes() {
     }
 
     for (const auto& arc : isthmes) {
-        int u = arc.first + 1;  // +1 pour ajuster si indexés à partir de 0
+        int u = arc.first + 1;  // +1 pour ajuster si indexÃ©s Ã  partir de 0
         int v = arc.second + 1;
 
         cout << "Arc entre le sommet " << u << " et le sommet " << v << " est un isthme.\n";
@@ -1153,7 +1153,7 @@ void Interface::afficherIsthmes() {
 void Interface::lancerKruskal() {
     effacerContenuConsole();
 
-    // Créer un graphe non orienté temporaire
+    // CrÃ©er un graphe non orientÃ© temporaire
     GrapheNonOriente gno(d_graphe.renvoyerListeSommetsDuGraphe(), d_graphe.renvoyerListeArcsDuGraphe());
 
     // Calculer l'arbre recouvrant minimal
@@ -1163,7 +1163,7 @@ void Interface::lancerKruskal() {
         return;
     }
 
-    cout << "\n=== Arbre recouvrant minimal généré ===\n";
+    cout << "\n=== Arbre recouvrant minimal gÃ©nÃ©rÃ© ===\n";
 
     // Choix affichage
     char choixAffichage;
