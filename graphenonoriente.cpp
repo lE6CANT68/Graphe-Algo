@@ -193,7 +193,7 @@ graphe* GrapheNonOriente::arbreRecouvrantMinimal() {
 
     // Initialisation des sous-ensembles pour l'union-find.
     vector<SousEnsemble> sousEnsembles(n);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i <= n; i++) {
         sousEnsembles[i].parent = i;
         sousEnsembles[i].rang = 0;
     }
